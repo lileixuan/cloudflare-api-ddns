@@ -111,7 +111,7 @@ if [ -f $ID_FILE ] && [ $(wc -l $ID_FILE | cut -d " " -f 1) == 4 ] \
 else
     echo "Updating zone_identifier & record_identifier"
     CFZONE_ID=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$CFZONE_NAME" -H "Authorization: Bearer $CFTOKEN" -H "Content-Type: application/json" | grep -Eo "result\"\:\[\{\"id\":\"[a-z0-9]{32}" | cut -c 17- )
-    CFRECORD_ID=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$CFZONE_ID/dns_records?name=$CFRECORD_NAME" -H "Authorization: Bearer $CFTOKEN" -H "Content-Type: application/json"  | grep -Eo "result\"\:\[\{\"id\":\"[a-z0-9]{32}" | cut -c 17- )
+    CFRECORD_ID=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$CFZONE_ID/dns_records?name=$CFRECORD_NAME&type=${CFRECORD_TYPE}" -H "Authorization: Bearer $CFTOKEN" -H "Content-Type: application/json"  | grep -Eo "result\"\:\[\{\"id\":\"[a-z0-9]{32}" | cut -c 17- )
     echo "$CFZONE_ID" > $ID_FILE
     echo "$CFRECORD_ID" >> $ID_FILE
     echo "$CFZONE_NAME" >> $ID_FILE
