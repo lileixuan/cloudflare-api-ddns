@@ -55,13 +55,13 @@ while getopts k:h:z:t:f: opts; do
   esac
 done
 
-WANIPSITE="http://ipv4.icanhazip.com"
+WANIPSITE="ipv4.ip.sb"
 
 # Site to retrieve WAN ip, other examples are: bot.whatismyipaddress.com, https://api.ipify.org/ ...
 if [ "$CFRECORD_TYPE" = "A" ]; then
   :
 elif [ "$CFRECORD_TYPE" = "AAAA" ]; then
-  WANIPSITE="http://ipv6.icanhazip.com"
+  WANIPSITE="ipv6.ip.sb"
 else
   echo "$CFRECORD_TYPE specified is invalid, CFRECORD_TYPE can only be A(for IPv4)|AAAA(for IPv6)"
   exit 2
