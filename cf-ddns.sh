@@ -110,8 +110,8 @@ if [ -f $ID_FILE ] && [ $(wc -l $ID_FILE | cut -d " " -f 1) == 4 ] \
     CFRECORD_ID=$(sed -n '2,1p' "$ID_FILE")
 else
     echo "Updating zone_identifier & record_identifier"
-    CFZONE_ID=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$CFZONE_NAME" -H "Authorization: Bearer $CFTOKEN" -H "Content-Type: application/json" | grep -Eo "result\"\:\[\{\"id\":\"[a-z0-9]{32}" | cut -c 17- )
-    CFRECORD_ID=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$CFZONE_ID/dns_records?name=$CFRECORD_NAME&type=${CFRECORD_TYPE}" -H "Authorization: Bearer $CFTOKEN" -H "Content-Type: application/json"  | grep -Eo "result\"\:\[\{\"id\":\"[a-z0-9]{32}" | cut -c 17- )
+    CFZONE_ID=$(curl -s -k -X GET "https://api.cloudflare.com/client/v4/zones?name=$CFZONE_NAME" -H "Authorization: Bearer $CFTOKEN" -H "Content-Type: application/json" | grep -Eo "result\"\:\[\{\"id\":\"[a-z0-9]{32}" | cut -c 17- )
+    CFRECORD_ID=$(curl -s -k -X GET "https://api.cloudflare.com/client/v4/zones/$CFZONE_ID/dns_records?name=$CFRECORD_NAME&type=${CFRECORD_TYPE}" -H "Authorization: Bearer $CFTOKEN" -H "Content-Type: application/json"  | grep -Eo "result\"\:\[\{\"id\":\"[a-z0-9]{32}" | cut -c 17- )
     echo "$CFZONE_ID" > $ID_FILE
     echo "$CFRECORD_ID" >> $ID_FILE
     echo "$CFZONE_NAME" >> $ID_FILE
@@ -121,7 +121,7 @@ fi
 # If WAN is changed, update cloudflare
 echo "Updating DNS to $WAN_IP"
 
-RESPONSE=$(curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$CFZONE_ID/dns_records/$CFRECORD_ID" \
+RESPONSE=$(curl -s -k -X PUT "https://api.cloudflare.com/client/v4/zones/$CFZONE_ID/dns_records/$CFRECORD_ID" \
   -H "Authorization: Bearer $CFTOKEN" \
   -H "Content-Type: application/json" \
   --data "{\"id\":\"$CFZONE_ID\",\"type\":\"$CFRECORD_TYPE\",\"name\":\"$CFRECORD_NAME\",\"content\":\"$WAN_IP\", \"ttl\":$CFTTL}")
